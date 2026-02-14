@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Paystack Inline Script -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <style>
         /* Reset & Base Styles */
         * {
@@ -387,7 +389,7 @@
             opacity: 0.9;
         }
         
-        /* Donation Modal */
+        /* Donation Modal - Simplified for Paystack */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -410,7 +412,7 @@
             background-color: white;
             border-radius: var(--border-radius);
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
@@ -423,8 +425,7 @@
         }
         
         .modal-header {
-            padding: 1.5rem 1.5rem 1rem;
-            border-bottom: 1px solid var(--gray-light);
+            padding: 1.5rem 1.5rem 0.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -455,6 +456,7 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
+            color: var(--dark);
         }
         
         .form-input {
@@ -472,39 +474,15 @@
             border-color: var(--primary);
         }
         
-        .amount-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-        }
-        
-        .amount-option {
-            padding: 1rem 0.5rem;
-            border: 2px solid var(--gray-light);
+        .amount-display {
+            background-color: var(--light);
+            padding: 1rem;
             border-radius: 8px;
             text-align: center;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .amount-option.selected {
-            border-color: var(--primary);
-            background-color: rgba(255, 126, 95, 0.1);
+            font-size: 2rem;
+            font-weight: 700;
             color: var(--primary);
-        }
-        
-        /* Success Message */
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-        }
-        
-        .success-icon {
-            font-size: 3rem;
-            color: var(--success);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         /* Tablet Styles */
@@ -580,26 +558,17 @@
             }
         }
         
-        /* Accessibility improvements */
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
+        /* Paystack Success Message */
+        .paystack-success {
+            display: none;
+            text-align: center;
+            padding: 2rem;
         }
         
-        /* High contrast mode */
-        @media (prefers-contrast: high) {
-            :root {
-                --primary: #CC0000;
-                --primary-dark: #990000;
-                --accent: #FFCC00;
-            }
-            
-            .btn {
-                border: 2px solid currentColor;
-            }
+        .paystack-success i {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -755,61 +724,44 @@
         </div>
     </section>
 
-    <!-- Donation Modal -->
+    <!-- Simplified Paystack Donation Modal -->
     <div class="modal-overlay" id="donationModal">
         <div class="modal">
             <div class="modal-header">
-                <h2 class="modal-title">Make a Donation</h2>
+                <h2 class="modal-title">Complete Your Donation</h2>
                 <button class="modal-close" id="modalClose">&times;</button>
             </div>
             
             <div class="modal-body">
                 <div id="donationForm">
-                    <p class="mb-3">Thank you for choosing to save a dog's life. Your donation will provide food, shelter, and medical care.</p>
+                    <!-- Amount Display -->
+                    <div class="amount-display" id="selectedAmountDisplay">$25</div>
                     
-                    <div class="form-group">
-                        <label class="form-label">Donation Amount</label>
-                        <div class="amount-options">
-                            <div class="amount-option" data-amount="25">$25</div>
-                            <div class="amount-option" data-amount="50">$50</div>
-                            <div class="amount-option" data-amount="100">$100</div>
-                            <div class="amount-option" data-amount="250">$250</div>
-                            <div class="amount-option" data-amount="500">$500</div>
-                            <div class="amount-option" id="customOption">Other</div>
-                        </div>
-                        <input type="number" id="customAmountInput" class="form-input mt-2" placeholder="Enter custom amount" style="display: none;" min="1">
-                    </div>
-                    
+                    <!-- Simple Form - Only Name and Email -->
                     <div class="form-group">
                         <label for="donorName" class="form-label">Full Name</label>
-                        <input type="text" id="donorName" class="form-input" required>
+                        <input type="text" id="donorName" class="form-input" placeholder="Enter your full name" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="donorEmail" class="form-label">Email Address</label>
-                        <input type="email" id="donorEmail" class="form-input" required>
+                        <input type="email" id="donorEmail" class="form-input" placeholder="We'll send your receipt here" required>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="donorMessage" class="form-label">Optional Message</label>
-                        <textarea id="donorMessage" class="form-input" rows="3" placeholder="Add a note or dedicate your donation"></textarea>
-                    </div>
-                    
-                    <button class="btn btn-primary btn-large" id="submitDonation" style="width: 100%;">
-                        <i class="fas fa-heart"></i> Complete Donation
+                    <!-- Continue to Paystack Button -->
+                    <button class="btn btn-primary btn-large" id="continueToPaystack" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
+                        <i class="fas fa-lock"></i> Continue to Payment
                     </button>
                     
-                    <p class="mt-2 text-center" style="font-size: 0.9rem; color: var(--gray);">
-                        <i class="fas fa-lock"></i> Your donation is secure and encrypted.
+                    <p class="mt-2 text-center" style="font-size: 0.85rem; color: var(--gray);">
+                        You'll be redirected to Paystack's secure payment page
                     </p>
                 </div>
                 
-                <div class="success-message" id="successMessage">
-                    <div class="success-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
+                <div class="paystack-success" id="paystackSuccess">
+                    <i class="fas fa-check-circle"></i>
                     <h3 class="mb-2">Thank You!</h3>
-                    <p>Your donation has been received. A confirmation email has been sent to you.</p>
+                    <p>Your donation has been received. A receipt has been sent to your email.</p>
                     <p class="mt-2" style="font-style: italic;">Because of you, a dog will get a second chance at life.</p>
                     <button class="btn btn-primary mt-3" id="closeSuccess">Close</button>
                 </div>
@@ -818,7 +770,25 @@
     </div>
 
     <script>
-        // DOM Elements - Only referencing elements that exist
+        // Paystack Configuration
+        // =======================
+        // REPLACE THESE WITH YOUR ACTUAL PAYSTACK KEYS
+        const PAYSTACK_PUBLIC_KEY = 'pk_test_50f796e5105a79f318cf2e6edbf73da1d7ce8608'; // Replace with your public key
+        const PAYSTACK_CURRENCY = 'USD'; // Change to your currency (NGN, GHS, ZAR, etc.)
+        const ORGANIZATION_NAME = 'Paws Rescue';
+        const ORGANIZATION_EMAIL = 'donations@pawsrescue.org'; // Where you receive payment notifications
+        
+        // Convert USD to your local currency (adjust as needed)
+        // For Paystack, amount is in kobo (Nigerian currency: 1 NGN = 100 kobo)
+        function convertToPaystackAmount(usdAmount) {
+            // This is a simple conversion - adjust based on your actual exchange rate
+            // For Nigeria (NGN): 1 USD ≈ 1500 NGN (rough estimate - update this!)
+            const exchangeRate = 1; // 1 USD = 1500 NGN (example rate)
+            const localAmount = usdAmount * exchangeRate;
+            return Math.round(localAmount * 100); // Convert to kobo
+        }
+        
+        // DOM Elements
         const donationModal = document.getElementById('donationModal');
         const modalClose = document.getElementById('modalClose');
         const closeSuccess = document.getElementById('closeSuccess');
@@ -828,39 +798,38 @@
         const monthlyDonateBtn = document.getElementById('monthlyDonateBtn');
         const donateAmountBtns = document.querySelectorAll('.donate-amount-btn');
         const sponsorBtns = document.querySelectorAll('.sponsor-btn');
-        const amountOptions = document.querySelectorAll('.amount-option');
-        const customAmountInput = document.getElementById('customAmountInput');
-        const customOption = document.getElementById('customOption');
-        const submitDonation = document.getElementById('submitDonation');
+        const continueToPaystack = document.getElementById('continueToPaystack');
+        const donorName = document.getElementById('donorName');
+        const donorEmail = document.getElementById('donorEmail');
+        const selectedAmountDisplay = document.getElementById('selectedAmountDisplay');
         const donationForm = document.getElementById('donationForm');
-        const successMessage = document.getElementById('successMessage');
+        const paystackSuccess = document.getElementById('paystackSuccess');
+        
+        // Store selected amount
+        let selectedAmount = 25; // Default amount
         
         // Open Donation Modal
-        function openDonationModal(amount = '', dogName = '') {
+        function openDonationModal(amount = 25, dogName = '') {
+            selectedAmount = parseInt(amount) || 25;
+            
+            // Update amount display
+            if (selectedAmountDisplay) {
+                selectedAmountDisplay.textContent = `$${selectedAmount}`;
+            }
+            
             donationModal.classList.add('active');
             document.body.style.overflow = 'hidden';
             
             // Reset form
             donationForm.style.display = 'block';
-            successMessage.style.display = 'none';
+            paystackSuccess.style.display = 'none';
             
-            // Clear any selected amount options
-            amountOptions.forEach(option => option.classList.remove('selected'));
-            customAmountInput.style.display = 'none';
+            // Clear previous values
+            if (donorName) donorName.value = '';
+            if (donorEmail) donorEmail.value = '';
             
-            // Set amount if provided
-            if (amount) {
-                amountOptions.forEach(option => {
-                    if (option.dataset.amount === amount.toString()) {
-                        option.classList.add('selected');
-                    }
-                });
-            }
-            
-            // Set message if sponsoring a dog
-            if (dogName) {
-                document.getElementById('donorMessage').value = `Sponsorship for ${dogName}`;
-            }
+            // Pre-fill message if sponsoring a dog
+            // (Optional - you could add a hidden field for dog name)
         }
         
         // Close Donation Modal
@@ -869,21 +838,105 @@
             document.body.style.overflow = 'auto';
         }
         
-        // Event Listeners for Donate Buttons (only if elements exist)
+        // Initialize Paystack Payment
+        function initializePaystackPayment() {
+            // Validate form
+            if (!donorName.value.trim()) {
+                alert('Please enter your name');
+                donorName.focus();
+                return false;
+            }
+            
+            if (!donorEmail.value.trim()) {
+                alert('Please enter your email address');
+                donorEmail.focus();
+                return false;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(donorEmail.value)) {
+                alert('Please enter a valid email address');
+                donorEmail.focus();
+                return false;
+            }
+            
+            // Convert amount to Paystack format (kobo/cents)
+            const amountInKobo = convertToPaystackAmount(selectedAmount);
+            
+            // Generate a unique reference
+            const reference = 'DON-' + Date.now() + '-' + Math.floor(Math.random() * 1000000);
+            
+            // Initialize Paystack popup
+            const handler = PaystackPop.setup({
+                key: PAYSTACK_PUBLIC_KEY,
+                email: donorEmail.value,
+                amount: amountInKobo,
+                currency: PAYSTACK_CURRENCY,
+                ref: reference,
+                metadata: {
+                    donor_name: donorName.value,
+                    custom_fields: [
+                        {
+                            display_name: "Donor Name",
+                            variable_name: "donor_name",
+                            value: donorName.value
+                        }
+                    ]
+                },
+                callback: function(response) {
+                    // Payment successful
+                    console.log('Payment successful:', response);
+                    
+                    // Show success message
+                    donationForm.style.display = 'none';
+                    paystackSuccess.style.display = 'block';
+                    
+                    // Update stats for demo
+                    const dogsRescued = document.getElementById('dogsRescued');
+                    if (dogsRescued) {
+                        const currentRescues = parseInt(dogsRescued.textContent.replace(/,/g, ''));
+                        dogsRescued.textContent = (currentRescues + 1).toLocaleString();
+                    }
+                    
+                    // You could send this data to your server here
+                    // fetch('/api/donation-success', { method: 'POST', body: JSON.stringify(response) })
+                },
+                onClose: function() {
+                    // Payment window closed without completing
+                    console.log('Payment cancelled');
+                    // Optional: Show a message
+                    alert('Payment cancelled. You can try again anytime.');
+                }
+            });
+            
+            handler.openIframe();
+            return true;
+        }
+        
+        // Event Listeners
+        
+        // Donate buttons
         if (heroDonateBtn) {
-            heroDonateBtn.addEventListener('click', () => openDonationModal());
+            heroDonateBtn.addEventListener('click', () => openDonationModal(25));
         }
         
         if (aboutDonateBtn) {
-            aboutDonateBtn.addEventListener('click', () => openDonationModal());
+            aboutDonateBtn.addEventListener('click', () => openDonationModal(25));
         }
         
         if (customAmountBtn) {
-            customAmountBtn.addEventListener('click', () => openDonationModal());
+            customAmountBtn.addEventListener('click', () => {
+                // Prompt user for custom amount
+                const customAmount = prompt('Enter donation amount in USD:', '50');
+                if (customAmount && !isNaN(customAmount) && parseFloat(customAmount) > 0) {
+                    openDonationModal(parseFloat(customAmount));
+                }
+            });
         }
         
         if (monthlyDonateBtn) {
-            monthlyDonateBtn.addEventListener('click', () => openDonationModal('50'));
+            monthlyDonateBtn.addEventListener('click', () => openDonationModal(50));
         }
         
         // Donate amount buttons
@@ -898,9 +951,17 @@
         sponsorBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                openDonationModal('50', btn.dataset.dog);
+                openDonationModal(50, btn.dataset.dog);
             });
         });
+        
+        // Continue to Paystack button
+        if (continueToPaystack) {
+            continueToPaystack.addEventListener('click', (e) => {
+                e.preventDefault();
+                initializePaystackPayment();
+            });
+        }
         
         // Modal close buttons
         if (modalClose) {
@@ -917,71 +978,6 @@
                 closeDonationModal();
             }
         });
-        
-        // Amount selection
-        amountOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                // Remove selected class from all options
-                amountOptions.forEach(opt => opt.classList.remove('selected'));
-                
-                // Add selected class to clicked option
-                option.classList.add('selected');
-                
-                // Handle custom amount
-                if (option.id === 'customOption') {
-                    customAmountInput.style.display = 'block';
-                    customAmountInput.focus();
-                } else {
-                    customAmountInput.style.display = 'none';
-                }
-            });
-        });
-        
-        // Form submission
-        if (submitDonation) {
-            submitDonation.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Get selected amount
-                let selectedAmount = '';
-                const selectedOption = document.querySelector('.amount-option.selected');
-                
-                if (selectedOption && selectedOption.dataset.amount) {
-                    selectedAmount = selectedOption.dataset.amount;
-                } else if (customAmountInput && customAmountInput.value) {
-                    selectedAmount = customAmountInput.value;
-                }
-                
-                // Validate
-                if (!selectedAmount) {
-                    alert('Please select or enter a donation amount.');
-                    return;
-                }
-                
-                const donorName = document.getElementById('donorName');
-                const donorEmail = document.getElementById('donorEmail');
-                
-                if (!donorName.value || !donorEmail.value) {
-                    alert('Please fill in your name and email.');
-                    return;
-                }
-                
-                // Show success message
-                donationForm.style.display = 'none';
-                successMessage.style.display = 'block';
-                
-                // Update stats for demo purposes
-                const dogsRescued = document.getElementById('dogsRescued');
-                if (dogsRescued) {
-                    const currentRescues = parseInt(dogsRescued.textContent.replace(/,/g, ''));
-                    const newRescues = Math.floor(parseInt(selectedAmount) / 100);
-                    
-                    if (newRescues > 0) {
-                        dogsRescued.textContent = (currentRescues + newRescues).toLocaleString();
-                    }
-                }
-            });
-        }
         
         // Animate stats on scroll
         function animateStats() {
@@ -1019,14 +1015,14 @@
             observer.observe(impactStats);
         }
         
-        // Accessibility improvements
+        // Accessibility
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && donationModal.classList.contains('active')) {
                 closeDonationModal();
             }
         });
         
-        // Improve touch experience on mobile
+        // Prevent body scroll when modal is open
         document.addEventListener('touchstart', () => {}, { passive: true });
     </script>
 </body>
