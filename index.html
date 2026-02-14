@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paws Rescue - Save Stray Dogs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF7E5F;
+            --primary-dark: #E56A4F;
+            --secondary: #5F9EA0;
+            --accent: #FFD166;
+            --dark: #2A2D34;
+            --light: #F8F9FA;
+            --gray: #6C757D;
+            --gray-light: #E9ECEF;
+            --success: #4CAF50;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: white;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        section {
+            padding: 2.5rem 1rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 126, 95, 0.1);
+        }
+        
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 16px;
+        }
+        
+        .btn-donate {
+            background-color: var(--accent);
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        .btn-donate:hover {
+            background-color: #FFC043;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 2rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .section-title.center:after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Header Styles - Simplified */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 0.8rem 0;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+        
+        .logo-icon {
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding-top: 5rem;
+            padding-bottom: 3rem;
+            background: linear-gradient(135deg, rgba(255, 126, 95, 0.1) 0%, rgba(95, 158, 160, 0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-image {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Impact Stats */
+        .impact-stats {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 1rem;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* About Section */
+        .about {
+            background-color: white;
+        }
+        
+        .about-image {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Dogs Section */
+        .dogs {
+            background-color: var(--light);
+        }
+        
+        .dog-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .dog-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .dog-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .dog-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .dog-info {
+            padding: 1.25rem;
+        }
+        
+        .dog-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .dog-description {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Donation Section */
+        .donation {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .donation:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1554456854-55a089fd4cb2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+        }
+        
+        .donation-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .donation h2 {
+            color: white;
+        }
+        
+        .donation h2:after {
+            background-color: white;
+        }
+        
+        .donation-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .donation-option {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .donation-option:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+        }
+        
+        .donation-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .donation-purpose {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Donation Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .amount-option {
+            padding: 1rem 0.5rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .amount-option.selected {
+            border-color: var(--primary);
+            background-color: rgba(255, 126, 95, 0.1);
+            color: var(--primary);
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+        
+        /* Tablet Styles */
+        @media (min-width: 768px) {
+            section {
+                padding: 3.5rem 1.5rem;
+            }
+            
+            .hero {
+                padding-top: 6rem;
+                padding-bottom: 4rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .dog-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+                align-items: center;
+            }
+            
+            .hero-image {
+                margin-top: 0;
+            }
+            
+            .about-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+                align-items: center;
+            }
+            
+            .about-image {
+                margin-bottom: 0;
+            }
+        }
+        
+        /* Desktop Styles */
+        @media (min-width: 1024px) {
+            html {
+                font-size: 18px;
+            }
+            
+            section {
+                padding: 5rem 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+            
+            .dog-cards {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .donation-options {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary: #CC0000;
+                --primary-dark: #990000;
+                --accent: #FFCC00;
+            }
+            
+            .btn {
+                border: 2px solid currentColor;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (Simplified - only logo) -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-paw logo-icon"></i>
+                <span>Paws Rescue</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1>Save a Stray Dog's Life Today</h1>
+                <p>Every donation provides food, medical care, and shelter for abandoned dogs waiting for their forever home. Your support makes their second chance possible.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary btn-large" id="heroDonateBtn">
+                        <i class="fas fa-heart"></i> Donate Now
+                    </button>
+                    <a href="#about" class="btn btn-secondary btn-large">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Rescued dog looking happy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Stats -->
+    <section class="impact-stats">
+        <div class="container">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number" id="dogsRescued">1,240</div>
+                    <div class="stat-label">Dogs Rescued</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="dogsAdopted">987</div>
+                    <div class="stat-label">Dogs Adopted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="mealsProvided">24,500</div>
+                    <div class="stat-label">Meals Provided</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="medicalTreatments">560</div>
+                    <div class="stat-label">Medical Treatments</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container about-container">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Volunteer caring for a dog">
+            </div>
+            <div class="about-content">
+                <h2 class="section-title">Our Mission</h2>
+                <p>Paws Rescue is a non-profit organization dedicated to rescuing, rehabilitating, and rehoming stray and abandoned dogs in our community.</p>
+                <p>We operate a no-kill shelter where every dog receives medical care, proper nutrition, and socialization until we find them a loving forever home.</p>
+                <p>With your support, we can rescue more dogs, provide essential medical treatments, and expand our spay/neuter program to reduce the stray population.</p>
+                <button class="btn btn-primary mt-3" id="aboutDonateBtn">
+                    <i class="fas fa-hand-holding-heart"></i> Support Our Work
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dogs Section -->
+    <section class="dogs" id="dogs">
+        <div class="container">
+            <h2 class="section-title center text-center">Dogs Needing Help</h2>
+            <p class="text-center mb-4">These dogs are currently in our care and waiting for adoption or sponsorship.</p>
+            
+            <div class="dog-cards">
+                <div class="dog-card">
+                    <img src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Brown dog with floppy ears" class="dog-img">
+                    <div class="dog-info">
+                        <h3 class="dog-name">Buddy</h3>
+                        <p class="dog-description">Found abandoned in a park. This friendly 2-year-old loves people and gets along with other dogs.</p>
+                        <button class="btn btn-secondary btn-donate sponsor-btn" data-dog="Buddy">Sponsor Buddy</button>
+                    </div>
+                </div>
+                
+                <div class="dog-card">
+                    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Small white dog" class="dog-img">
+                    <div class="dog-info">
+                        <h3 class="dog-name">Luna</h3>
+                        <p class="dog-description">Rescued from a puppy mill. Needs ongoing medical care for past neglect but has a sweet temperament.</p>
+                        <button class="btn btn-secondary btn-donate sponsor-btn" data-dog="Luna">Sponsor Luna</button>
+                    </div>
+                </div>
+                
+                <div class="dog-card">
+                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Golden retriever" class="dog-img">
+                    <div class="dog-info">
+                        <h3 class="dog-name">Max</h3>
+                        <p class="dog-description">Senior dog abandoned by his owners. Needs a quiet home and regular medication for arthritis.</p>
+                        <button class="btn btn-secondary btn-donate sponsor-btn" data-dog="Max">Sponsor Max</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Section -->
+    <section class="donation" id="donate">
+        <div class="container">
+            <div class="donation-content">
+                <h2 class="section-title center text-center">Make a Difference</h2>
+                <p class="text-center mb-4" style="font-size: 1.1rem;">Your donation directly saves lives. Choose how you'd like to help:</p>
+                
+                <div class="donation-options">
+                    <div class="donation-option">
+                        <div class="donation-amount">$25</div>
+                        <div class="donation-purpose">Feeds a dog for 2 weeks</div>
+                        <button class="btn btn-primary mt-2 donate-amount-btn" data-amount="25">Donate</button>
+                    </div>
+                    
+                    <div class="donation-option">
+                        <div class="donation-amount">$50</div>
+                        <div class="donation-purpose">Vaccinations for one dog</div>
+                        <button class="btn btn-primary mt-2 donate-amount-btn" data-amount="50">Donate</button>
+                    </div>
+                    
+                    <div class="donation-option">
+                        <div class="donation-amount">$100</div>
+                        <div class="donation-purpose">Emergency medical care</div>
+                        <button class="btn btn-primary mt-2 donate-amount-btn" data-amount="100">Donate</button>
+                    </div>
+                    
+                    <div class="donation-option">
+                        <div class="donation-amount">Custom</div>
+                        <div class="donation-purpose">Any amount helps</div>
+                        <button class="btn btn-primary mt-2" id="customAmountBtn">Choose Amount</button>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button class="btn btn-large" style="background-color: white; color: var(--primary);" id="monthlyDonateBtn">
+                        <i class="fas fa-hand-holding-usd"></i> Make a Monthly Donation
+                    </button>
+                    <p class="mt-2" style="opacity: 0.9; font-size: 0.9rem;">Monthly donors provide consistent support that lets us plan ahead for rescues.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Modal -->
+    <div class="modal-overlay" id="donationModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Make a Donation</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="donationForm">
+                    <p class="mb-3">Thank you for choosing to save a dog's life. Your donation will provide food, shelter, and medical care.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Donation Amount</label>
+                        <div class="amount-options">
+                            <div class="amount-option" data-amount="25">$25</div>
+                            <div class="amount-option" data-amount="50">$50</div>
+                            <div class="amount-option" data-amount="100">$100</div>
+                            <div class="amount-option" data-amount="250">$250</div>
+                            <div class="amount-option" data-amount="500">$500</div>
+                            <div class="amount-option" id="customOption">Other</div>
+                        </div>
+                        <input type="number" id="customAmountInput" class="form-input mt-2" placeholder="Enter custom amount" style="display: none;" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donorName" class="form-label">Full Name</label>
+                        <input type="text" id="donorName" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donorEmail" class="form-label">Email Address</label>
+                        <input type="email" id="donorEmail" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="donorMessage" class="form-label">Optional Message</label>
+                        <textarea id="donorMessage" class="form-input" rows="3" placeholder="Add a note or dedicate your donation"></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-large" id="submitDonation" style="width: 100%;">
+                        <i class="fas fa-heart"></i> Complete Donation
+                    </button>
+                    
+                    <p class="mt-2 text-center" style="font-size: 0.9rem; color: var(--gray);">
+                        <i class="fas fa-lock"></i> Your donation is secure and encrypted.
+                    </p>
+                </div>
+                
+                <div class="success-message" id="successMessage">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 class="mb-2">Thank You!</h3>
+                    <p>Your donation has been received. A confirmation email has been sent to you.</p>
+                    <p class="mt-2" style="font-style: italic;">Because of you, a dog will get a second chance at life.</p>
+                    <button class="btn btn-primary mt-3" id="closeSuccess">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements - Only referencing elements that exist
+        const donationModal = document.getElementById('donationModal');
+        const modalClose = document.getElementById('modalClose');
+        const closeSuccess = document.getElementById('closeSuccess');
+        const heroDonateBtn = document.getElementById('heroDonateBtn');
+        const aboutDonateBtn = document.getElementById('aboutDonateBtn');
+        const customAmountBtn = document.getElementById('customAmountBtn');
+        const monthlyDonateBtn = document.getElementById('monthlyDonateBtn');
+        const donateAmountBtns = document.querySelectorAll('.donate-amount-btn');
+        const sponsorBtns = document.querySelectorAll('.sponsor-btn');
+        const amountOptions = document.querySelectorAll('.amount-option');
+        const customAmountInput = document.getElementById('customAmountInput');
+        const customOption = document.getElementById('customOption');
+        const submitDonation = document.getElementById('submitDonation');
+        const donationForm = document.getElementById('donationForm');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Open Donation Modal
+        function openDonationModal(amount = '', dogName = '') {
+            donationModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Reset form
+            donationForm.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            // Clear any selected amount options
+            amountOptions.forEach(option => option.classList.remove('selected'));
+            customAmountInput.style.display = 'none';
+            
+            // Set amount if provided
+            if (amount) {
+                amountOptions.forEach(option => {
+                    if (option.dataset.amount === amount.toString()) {
+                        option.classList.add('selected');
+                    }
+                });
+            }
+            
+            // Set message if sponsoring a dog
+            if (dogName) {
+                document.getElementById('donorMessage').value = `Sponsorship for ${dogName}`;
+            }
+        }
+        
+        // Close Donation Modal
+        function closeDonationModal() {
+            donationModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Event Listeners for Donate Buttons (only if elements exist)
+        if (heroDonateBtn) {
+            heroDonateBtn.addEventListener('click', () => openDonationModal());
+        }
+        
+        if (aboutDonateBtn) {
+            aboutDonateBtn.addEventListener('click', () => openDonationModal());
+        }
+        
+        if (customAmountBtn) {
+            customAmountBtn.addEventListener('click', () => openDonationModal());
+        }
+        
+        if (monthlyDonateBtn) {
+            monthlyDonateBtn.addEventListener('click', () => openDonationModal('50'));
+        }
+        
+        // Donate amount buttons
+        donateAmountBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openDonationModal(btn.dataset.amount);
+            });
+        });
+        
+        // Sponsor buttons
+        sponsorBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openDonationModal('50', btn.dataset.dog);
+            });
+        });
+        
+        // Modal close buttons
+        if (modalClose) {
+            modalClose.addEventListener('click', closeDonationModal);
+        }
+        
+        if (closeSuccess) {
+            closeSuccess.addEventListener('click', closeDonationModal);
+        }
+        
+        // Close modal when clicking outside
+        donationModal.addEventListener('click', (e) => {
+            if (e.target === donationModal) {
+                closeDonationModal();
+            }
+        });
+        
+        // Amount selection
+        amountOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove selected class from all options
+                amountOptions.forEach(opt => opt.classList.remove('selected'));
+                
+                // Add selected class to clicked option
+                option.classList.add('selected');
+                
+                // Handle custom amount
+                if (option.id === 'customOption') {
+                    customAmountInput.style.display = 'block';
+                    customAmountInput.focus();
+                } else {
+                    customAmountInput.style.display = 'none';
+                }
+            });
+        });
+        
+        // Form submission
+        if (submitDonation) {
+            submitDonation.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Get selected amount
+                let selectedAmount = '';
+                const selectedOption = document.querySelector('.amount-option.selected');
+                
+                if (selectedOption && selectedOption.dataset.amount) {
+                    selectedAmount = selectedOption.dataset.amount;
+                } else if (customAmountInput && customAmountInput.value) {
+                    selectedAmount = customAmountInput.value;
+                }
+                
+                // Validate
+                if (!selectedAmount) {
+                    alert('Please select or enter a donation amount.');
+                    return;
+                }
+                
+                const donorName = document.getElementById('donorName');
+                const donorEmail = document.getElementById('donorEmail');
+                
+                if (!donorName.value || !donorEmail.value) {
+                    alert('Please fill in your name and email.');
+                    return;
+                }
+                
+                // Show success message
+                donationForm.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Update stats for demo purposes
+                const dogsRescued = document.getElementById('dogsRescued');
+                if (dogsRescued) {
+                    const currentRescues = parseInt(dogsRescued.textContent.replace(/,/g, ''));
+                    const newRescues = Math.floor(parseInt(selectedAmount) / 100);
+                    
+                    if (newRescues > 0) {
+                        dogsRescued.textContent = (currentRescues + newRescues).toLocaleString();
+                    }
+                }
+            });
+        }
+        
+        // Animate stats on scroll
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            
+            stats.forEach(stat => {
+                const finalValue = parseInt(stat.textContent.replace(/,/g, ''));
+                const duration = 1500;
+                const step = Math.ceil(finalValue / (duration / 16));
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += step;
+                    if (current >= finalValue) {
+                        current = finalValue;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = current.toLocaleString();
+                }, 16);
+            });
+        }
+        
+        // Trigger stats animation when in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        const impactStats = document.querySelector('.impact-stats');
+        if (impactStats) {
+            observer.observe(impactStats);
+        }
+        
+        // Accessibility improvements
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && donationModal.classList.contains('active')) {
+                closeDonationModal();
+            }
+        });
+        
+        // Improve touch experience on mobile
+        document.addEventListener('touchstart', () => {}, { passive: true });
+    </script>
+</body>
+</html>
