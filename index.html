@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <title>Paws Rescue - Save Stray Dogs</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,6 +28,9 @@
             --gray: #6C757D;
             --gray-light: #E9ECEF;
             --success: #4CAF50;
+            --error: #DC3545;
+            --warning: #FFC107;
+            --info: #17A2B8;
             --border-radius: 12px;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
@@ -389,7 +392,7 @@
             opacity: 0.9;
         }
         
-        /* Donation Modal - Simplified for Paystack */
+        /* Donation Modal - Improved for Mobile */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -417,6 +420,7 @@
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
             animation: modalSlideIn 0.3s ease;
+            -webkit-overflow-scrolling: touch;
         }
         
         @keyframes modalSlideIn {
@@ -429,6 +433,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 10;
+            border-bottom: 1px solid var(--gray-light);
         }
         
         .modal-title {
@@ -442,6 +451,7 @@
             font-size: 1.5rem;
             color: var(--gray);
             cursor: pointer;
+            padding: 0.5rem;
         }
         
         .modal-body {
@@ -466,23 +476,185 @@
             border-radius: 8px;
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            -webkit-appearance: none;
         }
         
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 126, 95, 0.1);
         }
         
-        .amount-display {
-            background-color: var(--light);
-            padding: 1rem;
+        /* Error state for inputs */
+        .form-input.error {
+            border-color: var(--error);
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+        
+        .form-input.error:focus {
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .error-message i {
+            font-size: 0.85rem;
+        }
+        
+        /* Amount input specific styles */
+        .amount-input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--gray-light);
             border-radius: 8px;
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .amount-input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 126, 95, 0.1);
+        }
+        
+        .amount-input-group.error {
+            border-color: var(--error);
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+        
+        .amount-currency {
+            background-color: var(--light);
+            padding: 0.875rem 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            border-right: 1px solid var(--gray-light);
+        }
+        
+        .amount-input {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: none;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            -webkit-appearance: none;
+        }
+        
+        .amount-input:focus {
+            outline: none;
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+            width: calc(100% - 40px);
+        }
+        
+        .toast {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .toast:hover {
+            transform: translateX(-5px);
+        }
+        
+        .toast.success {
+            border-left-color: var(--success);
+        }
+        
+        .toast.success i {
+            color: var(--success);
+        }
+        
+        .toast.error {
+            border-left-color: var(--error);
+        }
+        
+        .toast.error i {
+            color: var(--error);
+        }
+        
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+        
+        .toast.warning i {
+            color: var(--warning);
+        }
+        
+        .toast.info {
+            border-left-color: var(--info);
+        }
+        
+        .toast.info i {
+            color: var(--info);
+        }
+        
+        .toast-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+        
+        .toast-message {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .toast-close {
+            color: var(--gray);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            flex-shrink: 0;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        .toast.fade-out {
+            animation: slideOut 0.3s ease forwards;
         }
         
         /* Tablet Styles */
@@ -570,9 +742,33 @@
             color: var(--success);
             margin-bottom: 1rem;
         }
+        
+        /* Mobile keyboard fix */
+        @media (max-width: 768px) {
+            .modal-overlay.active {
+                align-items: flex-start;
+                padding-top: 2rem;
+            }
+            
+            .modal {
+                max-height: 85vh;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+            
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                width: auto;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <!-- Header (Simplified - only logo) -->
     <header>
         <div class="container header-container">
@@ -724,7 +920,7 @@
         </div>
     </section>
 
-    <!-- Simplified Paystack Donation Modal -->
+    <!-- Improved Paystack Donation Modal with Editable Amount -->
     <div class="modal-overlay" id="donationModal">
         <div class="modal">
             <div class="modal-header">
@@ -734,23 +930,45 @@
             
             <div class="modal-body">
                 <div id="donationForm">
-                    <!-- Amount Display -->
-                    <div class="amount-display" id="selectedAmountDisplay">$25</div>
+                    <!-- Editable Amount Field -->
+                    <div class="form-group">
+                        <label class="form-label">Donation Amount (USD)</label>
+                        <div class="amount-input-group" id="amountGroup">
+                            <span class="amount-currency">$</span>
+                            <input type="number" id="donationAmount" class="amount-input" value="25" min="1" step="1">
+                        </div>
+                        <div class="error-message" id="amountError" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Please enter a valid amount (minimum $1)</span>
+                        </div>
+                    </div>
                     
                     <!-- Simple Form - Only Name and Email -->
                     <div class="form-group">
                         <label for="donorName" class="form-label">Full Name</label>
-                        <input type="text" id="donorName" class="form-input" placeholder="Enter your full name" required>
+                        <input type="text" id="donorName" class="form-input" placeholder="Enter your full name" 
+                               autocomplete="name"
+                               autocapitalize="words">
+                        <div class="error-message" id="nameError" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Please enter your name</span>
+                        </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="donorEmail" class="form-label">Email Address</label>
-                        <input type="email" id="donorEmail" class="form-input" placeholder="We'll send your receipt here" required>
+                        <input type="email" id="donorEmail" class="form-input" placeholder="We'll send your receipt here" 
+                               autocomplete="email"
+                               inputmode="email">
+                        <div class="error-message" id="emailError" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Please enter a valid email address</span>
+                        </div>
                     </div>
                     
                     <!-- Continue to Paystack Button -->
                     <button class="btn btn-primary btn-large" id="continueToPaystack" style="width: 100%; font-size: 1.1rem; padding: 1rem;">
-                        <i class="fas fa-lock"></i> Continue to Payment
+                        <i class="fas fa-lock"></i> Donate Now
                     </button>
                     
                     <p class="mt-2 text-center" style="font-size: 0.85rem; color: var(--gray);">
@@ -772,20 +990,131 @@
     <script>
         // Paystack Configuration
         // =======================
-        // REPLACE THESE WITH YOUR ACTUAL PAYSTACK KEYS
-        const PAYSTACK_PUBLIC_KEY = 'pk_test_50f796e5105a79f318cf2e6edbf73da1d7ce8608'; // Replace with your public key
-        const PAYSTACK_CURRENCY = 'USD'; // Change to your currency (NGN, GHS, ZAR, etc.)
+        const PAYSTACK_PUBLIC_KEY = 'pk_test_50f796e5105a79f318cf2e6edbf73da1d7ce8608';
+        const PAYSTACK_CURRENCY = 'USD';
         const ORGANIZATION_NAME = 'Paws Rescue';
-        const ORGANIZATION_EMAIL = 'donations@pawsrescue.org'; // Where you receive payment notifications
+        const ORGANIZATION_EMAIL = 'donations@pawsrescue.org';
         
-        // Convert USD to your local currency (adjust as needed)
-        // For Paystack, amount is in kobo (Nigerian currency: 1 NGN = 100 kobo)
+        // Toast Notification System
+        function showToast(message, type = 'info', duration = 4000) {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            // Set icon based on type
+            let icon = 'info-circle';
+            let title = 'Information';
+            
+            switch(type) {
+                case 'success':
+                    icon = 'check-circle';
+                    title = 'Success';
+                    break;
+                case 'error':
+                    icon = 'exclamation-circle';
+                    title = 'Error';
+                    break;
+                case 'warning':
+                    icon = 'exclamation-triangle';
+                    title = 'Warning';
+                    break;
+                default:
+                    icon = 'info-circle';
+                    title = 'Information';
+            }
+            
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas fa-${icon}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.classList.add('fade-out'); setTimeout(() => this.parentElement.remove(), 300)">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            // Add to container
+            toastContainer.appendChild(toast);
+            
+            // Auto remove after duration
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => {
+                        if (toast.parentElement) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }
+            }, duration);
+            
+            // Allow click to dismiss
+            toast.addEventListener('click', (e) => {
+                if (!e.target.closest('.toast-close')) {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => {
+                        if (toast.parentElement) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }
+            });
+        }
+        
+        // Clear all error states
+        function clearErrors() {
+            // Remove error class from inputs
+            document.querySelectorAll('.form-input.error').forEach(input => {
+                input.classList.remove('error');
+            });
+            
+            const amountGroup = document.getElementById('amountGroup');
+            if (amountGroup) {
+                amountGroup.classList.remove('error');
+            }
+            
+            // Hide error messages
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+        }
+        
+        // Show error for a specific field
+        function showFieldError(fieldId, errorElementId, show = true) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(errorElementId);
+            
+            if (field) {
+                field.classList.add('error');
+            }
+            
+            if (errorElement) {
+                errorElement.style.display = 'flex';
+            }
+        }
+        
+        // Convert USD to your local currency
         function convertToPaystackAmount(usdAmount) {
-            // This is a simple conversion - adjust based on your actual exchange rate
-            // For Nigeria (NGN): 1 USD ≈ 1500 NGN (rough estimate - update this!)
-            const exchangeRate = 1; // 1 USD = 1500 NGN (example rate)
+            const exchangeRate = 1; // Adjust based on your currency
             const localAmount = usdAmount * exchangeRate;
-            return Math.round(localAmount * 100); // Convert to kobo
+            return Math.round(localAmount * 100);
+        }
+        
+        // Auto-capitalize function for name input
+        function autoCapitalizeName(input) {
+            let value = input.value;
+            let words = value.split(' ');
+            for (let i = 0; i < words.length; i++) {
+                if (words[i].length > 0) {
+                    words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
+                }
+            }
+            input.value = words.join(' ');
         }
         
         // DOM Elements
@@ -801,20 +1130,19 @@
         const continueToPaystack = document.getElementById('continueToPaystack');
         const donorName = document.getElementById('donorName');
         const donorEmail = document.getElementById('donorEmail');
-        const selectedAmountDisplay = document.getElementById('selectedAmountDisplay');
+        const donationAmount = document.getElementById('donationAmount');
+        const amountGroup = document.getElementById('amountGroup');
         const donationForm = document.getElementById('donationForm');
         const paystackSuccess = document.getElementById('paystackSuccess');
         
-        // Store selected amount
-        let selectedAmount = 25; // Default amount
-        
         // Open Donation Modal
         function openDonationModal(amount = 25, dogName = '') {
-            selectedAmount = parseInt(amount) || 25;
+            // Clear any previous errors
+            clearErrors();
             
-            // Update amount display
-            if (selectedAmountDisplay) {
-                selectedAmountDisplay.textContent = `$${selectedAmount}`;
+            // Set the amount in the input field
+            if (donationAmount) {
+                donationAmount.value = amount;
             }
             
             donationModal.classList.add('active');
@@ -828,50 +1156,85 @@
             if (donorName) donorName.value = '';
             if (donorEmail) donorEmail.value = '';
             
-            // Pre-fill message if sponsoring a dog
-            // (Optional - you could add a hidden field for dog name)
+            // Focus on name input after modal opens
+            setTimeout(() => {
+                if (donorName) donorName.focus();
+            }, 300);
         }
         
         // Close Donation Modal
         function closeDonationModal() {
             donationModal.classList.remove('active');
             document.body.style.overflow = 'auto';
+            clearErrors();
+        }
+        
+        // Auto-capitalize name on input
+        if (donorName) {
+            donorName.addEventListener('input', function() {
+                autoCapitalizeName(this);
+            });
+            
+            donorName.addEventListener('blur', function() {
+                autoCapitalizeName(this);
+            });
+        }
+        
+        // Validate form and show errors
+        function validateForm() {
+            clearErrors();
+            
+            let isValid = true;
+            const amount = parseFloat(donationAmount.value);
+            const name = donorName.value.trim();
+            const email = donorEmail.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            // Validate amount
+            if (!amount || amount < 1) {
+                showFieldError('donationAmount', 'amountError');
+                if (amountGroup) amountGroup.classList.add('error');
+                isValid = false;
+            }
+            
+            // Validate name
+            if (!name) {
+                showFieldError('donorName', 'nameError');
+                isValid = false;
+            }
+            
+            // Validate email
+            if (!email) {
+                showFieldError('donorEmail', 'emailError');
+                document.getElementById('emailError').querySelector('span').textContent = 'Please enter your email address';
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                showFieldError('donorEmail', 'emailError');
+                document.getElementById('emailError').querySelector('span').textContent = 'Please enter a valid email address';
+                isValid = false;
+            }
+            
+            return isValid;
         }
         
         // Initialize Paystack Payment
         function initializePaystackPayment() {
-            // Validate form
-            if (!donorName.value.trim()) {
-                alert('Please enter your name');
-                donorName.focus();
+            if (!validateForm()) {
+                showToast('Please fix the errors in the form', 'error');
                 return false;
             }
             
-            if (!donorEmail.value.trim()) {
-                alert('Please enter your email address');
-                donorEmail.focus();
-                return false;
-            }
-            
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(donorEmail.value)) {
-                alert('Please enter a valid email address');
-                donorEmail.focus();
-                return false;
-            }
-            
-            // Convert amount to Paystack format (kobo/cents)
-            const amountInKobo = convertToPaystackAmount(selectedAmount);
-            
-            // Generate a unique reference
+            const selectedAmount = parseFloat(donationAmount.value) || 25;
+            const amountInSmallestUnit = convertToPaystackAmount(selectedAmount);
             const reference = 'DON-' + Date.now() + '-' + Math.floor(Math.random() * 1000000);
             
-            // Initialize Paystack popup
+            // Show loading toast
+            showToast('Opening secure payment page...', 'info', 2000);
+            
             const handler = PaystackPop.setup({
                 key: PAYSTACK_PUBLIC_KEY,
                 email: donorEmail.value,
-                amount: amountInKobo,
+                amount: amountInSmallestUnit,
                 currency: PAYSTACK_CURRENCY,
                 ref: reference,
                 metadata: {
@@ -888,9 +1251,12 @@
                     // Payment successful
                     console.log('Payment successful:', response);
                     
-                    // Show success message
+                    // Show success message in modal
                     donationForm.style.display = 'none';
                     paystackSuccess.style.display = 'block';
+                    
+                    // Show success toast
+                    showToast('Thank you for your donation! A receipt has been sent to your email.', 'success', 6000);
                     
                     // Update stats for demo
                     const dogsRescued = document.getElementById('dogsRescued');
@@ -898,15 +1264,11 @@
                         const currentRescues = parseInt(dogsRescued.textContent.replace(/,/g, ''));
                         dogsRescued.textContent = (currentRescues + 1).toLocaleString();
                     }
-                    
-                    // You could send this data to your server here
-                    // fetch('/api/donation-success', { method: 'POST', body: JSON.stringify(response) })
                 },
                 onClose: function() {
                     // Payment window closed without completing
                     console.log('Payment cancelled');
-                    // Optional: Show a message
-                    alert('Payment cancelled. You can try again anytime.');
+                    showToast('Payment cancelled. You can try again anytime.', 'warning', 4000);
                 }
             });
             
@@ -927,10 +1289,11 @@
         
         if (customAmountBtn) {
             customAmountBtn.addEventListener('click', () => {
-                // Prompt user for custom amount
                 const customAmount = prompt('Enter donation amount in USD:', '50');
                 if (customAmount && !isNaN(customAmount) && parseFloat(customAmount) > 0) {
                     openDonationModal(parseFloat(customAmount));
+                } else if (customAmount) {
+                    showToast('Please enter a valid number', 'error');
                 }
             });
         }
@@ -979,6 +1342,27 @@
             }
         });
         
+        // Clear errors when user starts typing
+        const inputs = [donorName, donorEmail, donationAmount];
+        inputs.forEach(input => {
+            if (input) {
+                input.addEventListener('input', function() {
+                    if (this.classList.contains('error')) {
+                        this.classList.remove('error');
+                        if (this.id === 'donationAmount' && amountGroup) {
+                            amountGroup.classList.remove('error');
+                        }
+                        const errorId = this.id === 'donationAmount' ? 'amountError' : 
+                                       this.id === 'donorName' ? 'nameError' : 'emailError';
+                        const errorElement = document.getElementById(errorId);
+                        if (errorElement) {
+                            errorElement.style.display = 'none';
+                        }
+                    }
+                });
+            }
+        });
+        
         // Animate stats on scroll
         function animateStats() {
             const stats = document.querySelectorAll('.stat-number');
@@ -1015,7 +1399,7 @@
             observer.observe(impactStats);
         }
         
-        // Accessibility
+        // Accessibility and Mobile improvements
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && donationModal.classList.contains('active')) {
                 closeDonationModal();
@@ -1024,6 +1408,25 @@
         
         // Prevent body scroll when modal is open
         document.addEventListener('touchstart', () => {}, { passive: true });
+        
+        // Handle keyboard appearing on mobile
+        if (donationModal) {
+            const modalContent = donationModal.querySelector('.modal');
+            const inputs = donationModal.querySelectorAll('input');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    setTimeout(() => {
+                        if (modalContent) {
+                            modalContent.scrollTo({
+                                top: input.offsetTop - 20,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 300);
+                });
+            });
+        }
     </script>
 </body>
 </html>
