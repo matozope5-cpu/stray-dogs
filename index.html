@@ -392,7 +392,7 @@
             opacity: 0.9;
         }
         
-        /* Donation Modal - Improved for Mobile */
+        /* Donation Modal - Fixed for Mobile Keyboard */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -420,7 +420,7 @@
             overflow-y: auto;
             box-shadow: var(--shadow-lg);
             animation: modalSlideIn 0.3s ease;
-            -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
         
         @keyframes modalSlideIn {
@@ -456,6 +456,7 @@
         
         .modal-body {
             padding: 1.5rem;
+            padding-bottom: 2rem; /* Extra padding at bottom for scrolling */
         }
         
         .form-group {
@@ -694,11 +695,11 @@
         
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(0%); opacity: 1; }
         }
         
         @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
+            from { transform: translateX(0%); opacity: 1; }
             to { transform: translateX(100%); opacity: 0; }
         }
         
@@ -706,7 +707,7 @@
             animation: slideOut 0.3s ease forwards;
         }
         
-        /* Tablet/Desktop Styles - keep 2x2 for consistency */
+        /* Tablet/Desktop Styles */
         @media (min-width: 768px) {
             section {
                 padding: 3.5rem 1.5rem;
@@ -761,7 +762,7 @@
             }
         }
         
-        /* Desktop Styles - still 2x2 */
+        /* Desktop Styles */
         @media (min-width: 1024px) {
             html {
                 font-size: 18px;
@@ -801,17 +802,18 @@
             margin-bottom: 1rem;
         }
         
-        /* Mobile keyboard fix */
+        /* Mobile keyboard fix - Enhanced */
         @media (max-width: 768px) {
             .modal-overlay.active {
                 align-items: flex-start;
-                padding-top: 2rem;
+                padding-top: 1rem;
+                padding-bottom: 0;
             }
             
             .modal {
-                max-height: 85vh;
-                margin-top: auto;
-                margin-bottom: auto;
+                max-height: 90vh;
+                margin: 0;
+                width: 100%;
             }
             
             .toast-container {
@@ -819,6 +821,27 @@
                 right: 10px;
                 left: 10px;
                 width: auto;
+            }
+            
+            /* Add extra padding at the bottom for scrolling */
+            .modal-body {
+                padding-bottom: 4rem;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 360px) {
+            .amount-option-btn {
+                font-size: 1rem;
+                padding: 0.875rem 0.25rem;
+            }
+            
+            .custom-currency {
+                padding: 0.875rem 0.25rem 0.875rem 0.5rem;
+            }
+            
+            .custom-amount-input {
+                padding: 0.875rem 0.5rem 0.875rem 0.1rem;
             }
         }
     </style>
@@ -1183,6 +1206,30 @@
             input.value = words.join(' ');
         }
         
+        // Function to scroll input into view when focused (mobile keyboard fix)
+        function scrollInputIntoView(inputElement) {
+            if (!inputElement) return;
+            
+            setTimeout(() => {
+                const modal = document.querySelector('.modal');
+                if (!modal) return;
+                
+                const inputRect = inputElement.getBoundingClientRect();
+                const modalRect = modal.getBoundingClientRect();
+                
+                // Calculate if input is hidden by keyboard
+                const keyboardOffset = window.innerHeight - modalRect.bottom;
+                
+                if (keyboardOffset < 0) {
+                    // Keyboard is likely open, scroll to input
+                    modal.scrollTo({
+                        top: inputElement.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 300); // Small delay to allow keyboard to open
+        }
+        
         // DOM Elements
         const donationModal = document.getElementById('donationModal');
         const modalClose = document.getElementById('modalClose');
@@ -1256,7 +1303,10 @@
             
             // Focus on name input after modal opens
             setTimeout(() => {
-                if (donorName) donorName.focus();
+                if (donorName) {
+                    donorName.focus();
+                    scrollInputIntoView(donorName);
+                }
             }, 300);
         }
         
@@ -1316,6 +1366,9 @@
                 // Remove error state
                 customAmountOption.classList.remove('error');
                 document.getElementById('amountError').style.display = 'none';
+                
+                // Scroll into view
+                scrollInputIntoView(this);
             });
             
             customAmount.addEventListener('input', function() {
@@ -1332,6 +1385,19 @@
                     customAmountOption.classList.remove('error');
                     document.getElementById('amountError').style.display = 'none';
                 }
+            });
+        }
+        
+        // Add focus event listeners to all inputs for mobile scrolling
+        if (donorName) {
+            donorName.addEventListener('focus', function() {
+                scrollInputIntoView(this);
+            });
+        }
+        
+        if (donorEmail) {
+            donorEmail.addEventListener('focus', function() {
+                scrollInputIntoView(this);
             });
         }
         
@@ -1364,6 +1430,11 @@
                 if (!amount || amount < 1) {
                     showFieldError('customAmount', 'amountError');
                     isValid = false;
+                    
+                    // Scroll to error
+                    setTimeout(() => {
+                        scrollInputIntoView(customAmount);
+                    }, 100);
                 }
                 selectedAmountSource = 'custom';
             }
@@ -1376,6 +1447,11 @@
             if (!name) {
                 showFieldError('donorName', 'nameError');
                 isValid = false;
+                
+                // Scroll to error
+                setTimeout(() => {
+                    scrollInputIntoView(donorName);
+                }, 100);
             }
             
             // Validate email
@@ -1383,10 +1459,20 @@
                 showFieldError('donorEmail', 'emailError');
                 document.getElementById('emailError').querySelector('span').textContent = 'Please enter your email address';
                 isValid = false;
+                
+                // Scroll to error
+                setTimeout(() => {
+                    scrollInputIntoView(donorEmail);
+                }, 100);
             } else if (!emailRegex.test(email)) {
                 showFieldError('donorEmail', 'emailError');
                 document.getElementById('emailError').querySelector('span').textContent = 'Please enter a valid email address';
                 isValid = false;
+                
+                // Scroll to error
+                setTimeout(() => {
+                    scrollInputIntoView(donorEmail);
+                }, 100);
             }
             
             return isValid;
@@ -1590,30 +1676,25 @@
         // Prevent body scroll when modal is open
         document.addEventListener('touchstart', () => {}, { passive: true });
         
-        // Handle keyboard appearing on mobile
-        if (donationModal) {
-            const modalContent = donationModal.querySelector('.modal');
-            const inputs = donationModal.querySelectorAll('input');
+        // Handle window resize (keyboard opening/closing)
+        let lastWindowHeight = window.innerHeight;
+        window.addEventListener('resize', function() {
+            const newHeight = window.innerHeight;
             
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    setTimeout(() => {
-                        if (modalContent) {
-                            modalContent.scrollTo({
-                                top: input.offsetTop - 20,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }, 300);
-                });
-            });
-        }
+            // If height decreased significantly, keyboard likely opened
+            if (lastWindowHeight - newHeight > 100) {
+                // Get the active element
+                const activeElement = document.activeElement;
+                if (activeElement && donationModal.classList.contains('active')) {
+                    scrollInputIntoView(activeElement);
+                }
+            }
+            
+            lastWindowHeight = newHeight;
+        });
         
         // Set $25 as default selected when modal opens
-        document.addEventListener('DOMContentLoaded', function() {
-            // This ensures when modal first opens, $25 is selected
-            // The selection happens in openDonationModal already
-        });
+        // This is handled in openDonationModal
     </script>
 </body>
 </html>
