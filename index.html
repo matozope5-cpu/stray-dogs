@@ -509,45 +509,94 @@
             font-size: 0.85rem;
         }
         
-        /* Amount input specific styles */
-        .amount-input-group {
-            display: flex;
-            align-items: center;
-            border: 1px solid var(--gray-light);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.3s;
+        /* Amount Options Grid - 2x2 on all screen sizes */
+        .amount-options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
         }
         
-        .amount-input-group:focus-within {
+        .amount-option-btn {
+            background-color: var(--light);
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            padding: 1rem 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .amount-option-btn:hover {
+            border-color: var(--primary);
+            background-color: rgba(255, 126, 95, 0.05);
+        }
+        
+        .amount-option-btn.selected {
+            border-color: var(--primary);
+            background-color: rgba(255, 126, 95, 0.1);
+            color: var(--primary);
+        }
+        
+        /* Custom amount option - styled to match buttons */
+        .custom-amount-option {
+            background-color: var(--light);
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .custom-amount-option:focus-within {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(255, 126, 95, 0.1);
         }
         
-        .amount-input-group.error {
+        .custom-amount-option.error {
             border-color: var(--error);
             background-color: rgba(220, 53, 69, 0.05);
         }
         
-        .amount-currency {
-            background-color: var(--light);
-            padding: 0.875rem 1rem;
+        .custom-currency {
+            padding: 1rem 0.25rem 1rem 0.75rem;
             font-weight: 600;
             color: var(--dark);
-            border-right: 1px solid var(--gray-light);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
         }
         
-        .amount-input {
+        .custom-amount-input {
             flex: 1;
-            padding: 0.875rem 1rem;
+            padding: 1rem 0.75rem 1rem 0.25rem;
             border: none;
             font-size: 1rem;
             font-family: 'Inter', sans-serif;
+            background: transparent;
             -webkit-appearance: none;
+            width: 100%;
+            min-width: 0;
         }
         
-        .amount-input:focus {
+        .custom-amount-input:focus {
             outline: none;
+        }
+        
+        .custom-amount-input::placeholder {
+            color: var(--gray);
+            font-size: 0.95rem;
         }
         
         /* Toast Notifications */
@@ -657,7 +706,7 @@
             animation: slideOut 0.3s ease forwards;
         }
         
-        /* Tablet Styles */
+        /* Tablet/Desktop Styles - keep 2x2 for consistency */
         @media (min-width: 768px) {
             section {
                 padding: 3.5rem 1.5rem;
@@ -705,9 +754,14 @@
             .about-image {
                 margin-bottom: 0;
             }
+            
+            /* Keep 2x2 on larger screens too */
+            .amount-options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
-        /* Desktop Styles */
+        /* Desktop Styles - still 2x2 */
         @media (min-width: 1024px) {
             html {
                 font-size: 18px;
@@ -727,6 +781,10 @@
             
             .donation-options {
                 grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .amount-options-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
@@ -920,7 +978,7 @@
         </div>
     </section>
 
-    <!-- Improved Paystack Donation Modal with Editable Amount -->
+    <!-- Paystack Donation Modal with 2x2 Grid -->
     <div class="modal-overlay" id="donationModal">
         <div class="modal">
             <div class="modal-header">
@@ -930,12 +988,17 @@
             
             <div class="modal-body">
                 <div id="donationForm">
-                    <!-- Editable Amount Field -->
+                    <!-- Amount Options - 2x2 Grid -->
                     <div class="form-group">
-                        <label class="form-label">Donation Amount (USD)</label>
-                        <div class="amount-input-group" id="amountGroup">
-                            <span class="amount-currency">$</span>
-                            <input type="number" id="donationAmount" class="amount-input" value="25" min="1" step="1">
+                        <label class="form-label">Select Donation Amount</label>
+                        <div class="amount-options-grid">
+                            <button type="button" class="amount-option-btn" data-value="25">$25</button>
+                            <button type="button" class="amount-option-btn" data-value="50">$50</button>
+                            <button type="button" class="amount-option-btn" data-value="100">$100</button>
+                            <div class="custom-amount-option" id="customAmountOption">
+                                <span class="custom-currency">$</span>
+                                <input type="number" id="customAmount" class="custom-amount-input" placeholder="Custom" min="1" step="1">
+                            </div>
                         </div>
                         <div class="error-message" id="amountError" style="display: none;">
                             <i class="fas fa-exclamation-circle"></i>
@@ -1073,10 +1136,9 @@
                 input.classList.remove('error');
             });
             
-            const amountGroup = document.getElementById('amountGroup');
-            if (amountGroup) {
-                amountGroup.classList.remove('error');
-            }
+            document.querySelectorAll('.custom-amount-option.error').forEach(el => {
+                el.classList.remove('error');
+            });
             
             // Hide error messages
             document.querySelectorAll('.error-message').forEach(msg => {
@@ -1085,12 +1147,16 @@
         }
         
         // Show error for a specific field
-        function showFieldError(fieldId, errorElementId, show = true) {
+        function showFieldError(fieldId, errorElementId) {
             const field = document.getElementById(fieldId);
             const errorElement = document.getElementById(errorElementId);
             
             if (field) {
                 field.classList.add('error');
+                // If it's the custom amount container, add error class to parent
+                if (fieldId === 'customAmount') {
+                    document.getElementById('customAmountOption').classList.add('error');
+                }
             }
             
             if (errorElement) {
@@ -1130,19 +1196,51 @@
         const continueToPaystack = document.getElementById('continueToPaystack');
         const donorName = document.getElementById('donorName');
         const donorEmail = document.getElementById('donorEmail');
-        const donationAmount = document.getElementById('donationAmount');
-        const amountGroup = document.getElementById('amountGroup');
+        const amountOptionBtns = document.querySelectorAll('.amount-option-btn');
+        const customAmount = document.getElementById('customAmount');
+        const customAmountOption = document.getElementById('customAmountOption');
         const donationForm = document.getElementById('donationForm');
         const paystackSuccess = document.getElementById('paystackSuccess');
+        
+        // Track selected amount source
+        let selectedAmountSource = 'preset'; // 'preset' or 'custom'
+        let selectedPresetAmount = 25; // Default to $25
         
         // Open Donation Modal
         function openDonationModal(amount = 25, dogName = '') {
             // Clear any previous errors
             clearErrors();
             
-            // Set the amount in the input field
-            if (donationAmount) {
-                donationAmount.value = amount;
+            // Reset amount options
+            amountOptionBtns.forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Reset custom amount
+            if (customAmount) {
+                customAmount.value = '';
+            }
+            customAmountOption.classList.remove('error');
+            
+            // Check if the amount is preset or custom
+            if ([25, 50, 100].includes(Number(amount))) {
+                // Preset amount
+                selectedAmountSource = 'preset';
+                selectedPresetAmount = Number(amount);
+                
+                // Select the corresponding button
+                amountOptionBtns.forEach(btn => {
+                    if (btn.dataset.value === amount.toString()) {
+                        btn.classList.add('selected');
+                    }
+                });
+            } else {
+                // Custom amount
+                selectedAmountSource = 'custom';
+                // Don't select any preset button
+                if (customAmount) {
+                    customAmount.value = amount;
+                }
             }
             
             donationModal.classList.add('active');
@@ -1180,22 +1278,99 @@
             });
         }
         
+        // Amount option buttons click handlers
+        amountOptionBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove selected class from all buttons
+                amountOptionBtns.forEach(b => b.classList.remove('selected'));
+                
+                // Add selected class to clicked button
+                this.classList.add('selected');
+                
+                // Clear custom amount
+                if (customAmount) {
+                    customAmount.value = '';
+                }
+                customAmountOption.classList.remove('error');
+                
+                // Update source
+                selectedAmountSource = 'preset';
+                selectedPresetAmount = Number(this.dataset.value);
+                
+                // Clear any amount errors
+                document.getElementById('amountError').style.display = 'none';
+            });
+        });
+        
+        // Custom amount input handler
+        if (customAmount) {
+            customAmount.addEventListener('focus', function() {
+                // Deselect all preset buttons
+                amountOptionBtns.forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // Update source
+                selectedAmountSource = 'custom';
+                
+                // Remove error state
+                customAmountOption.classList.remove('error');
+                document.getElementById('amountError').style.display = 'none';
+            });
+            
+            customAmount.addEventListener('input', function() {
+                if (this.value) {
+                    // Deselect all preset buttons
+                    amountOptionBtns.forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    
+                    // Update source
+                    selectedAmountSource = 'custom';
+                    
+                    // Remove error state
+                    customAmountOption.classList.remove('error');
+                    document.getElementById('amountError').style.display = 'none';
+                }
+            });
+        }
+        
+        // Custom amount button from main page
+        if (customAmountBtn) {
+            customAmountBtn.addEventListener('click', () => {
+                openDonationModal(50); // Open with custom amount field ready
+            });
+        }
+        
         // Validate form and show errors
         function validateForm() {
             clearErrors();
             
             let isValid = true;
-            const amount = parseFloat(donationAmount.value);
+            let amount;
+            
+            // Determine which amount source is active
+            const hasPresetSelected = Array.from(amountOptionBtns).some(btn => btn.classList.contains('selected'));
+            
+            if (hasPresetSelected) {
+                // Preset amount is selected
+                const selectedBtn = Array.from(amountOptionBtns).find(btn => btn.classList.contains('selected'));
+                amount = parseInt(selectedBtn.dataset.value);
+                selectedAmountSource = 'preset';
+                selectedPresetAmount = amount;
+            } else {
+                // Custom amount
+                amount = parseFloat(customAmount.value);
+                if (!amount || amount < 1) {
+                    showFieldError('customAmount', 'amountError');
+                    isValid = false;
+                }
+                selectedAmountSource = 'custom';
+            }
+            
             const name = donorName.value.trim();
             const email = donorEmail.value.trim();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            // Validate amount
-            if (!amount || amount < 1) {
-                showFieldError('donationAmount', 'amountError');
-                if (amountGroup) amountGroup.classList.add('error');
-                isValid = false;
-            }
             
             // Validate name
             if (!name) {
@@ -1224,8 +1399,18 @@
                 return false;
             }
             
-            const selectedAmount = parseFloat(donationAmount.value) || 25;
-            const amountInSmallestUnit = convertToPaystackAmount(selectedAmount);
+            // Get the final amount
+            let finalAmount;
+            const hasPresetSelected = Array.from(amountOptionBtns).some(btn => btn.classList.contains('selected'));
+            
+            if (hasPresetSelected) {
+                const selectedBtn = Array.from(amountOptionBtns).find(btn => btn.classList.contains('selected'));
+                finalAmount = parseInt(selectedBtn.dataset.value);
+            } else {
+                finalAmount = parseFloat(customAmount.value);
+            }
+            
+            const amountInSmallestUnit = convertToPaystackAmount(finalAmount);
             const reference = 'DON-' + Date.now() + '-' + Math.floor(Math.random() * 1000000);
             
             // Show loading toast
@@ -1287,17 +1472,6 @@
             aboutDonateBtn.addEventListener('click', () => openDonationModal(25));
         }
         
-        if (customAmountBtn) {
-            customAmountBtn.addEventListener('click', () => {
-                const customAmount = prompt('Enter donation amount in USD:', '50');
-                if (customAmount && !isNaN(customAmount) && parseFloat(customAmount) > 0) {
-                    openDonationModal(parseFloat(customAmount));
-                } else if (customAmount) {
-                    showToast('Please enter a valid number', 'error');
-                }
-            });
-        }
-        
         if (monthlyDonateBtn) {
             monthlyDonateBtn.addEventListener('click', () => openDonationModal(50));
         }
@@ -1343,25 +1517,32 @@
         });
         
         // Clear errors when user starts typing
-        const inputs = [donorName, donorEmail, donationAmount];
-        inputs.forEach(input => {
-            if (input) {
-                input.addEventListener('input', function() {
-                    if (this.classList.contains('error')) {
-                        this.classList.remove('error');
-                        if (this.id === 'donationAmount' && amountGroup) {
-                            amountGroup.classList.remove('error');
-                        }
-                        const errorId = this.id === 'donationAmount' ? 'amountError' : 
-                                       this.id === 'donorName' ? 'nameError' : 'emailError';
-                        const errorElement = document.getElementById(errorId);
-                        if (errorElement) {
-                            errorElement.style.display = 'none';
-                        }
-                    }
-                });
-            }
-        });
+        if (donorName) {
+            donorName.addEventListener('input', function() {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                    document.getElementById('nameError').style.display = 'none';
+                }
+            });
+        }
+        
+        if (donorEmail) {
+            donorEmail.addEventListener('input', function() {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                    document.getElementById('emailError').style.display = 'none';
+                }
+            });
+        }
+        
+        if (customAmount) {
+            customAmount.addEventListener('input', function() {
+                if (customAmountOption.classList.contains('error')) {
+                    customAmountOption.classList.remove('error');
+                    document.getElementById('amountError').style.display = 'none';
+                }
+            });
+        }
         
         // Animate stats on scroll
         function animateStats() {
@@ -1427,6 +1608,12 @@
                 });
             });
         }
+        
+        // Set $25 as default selected when modal opens
+        document.addEventListener('DOMContentLoaded', function() {
+            // This ensures when modal first opens, $25 is selected
+            // The selection happens in openDonationModal already
+        });
     </script>
 </body>
 </html>
